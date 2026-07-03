@@ -2,7 +2,11 @@
 
 ## Status
 
-Confirmed — root cause identified in the bridge (2026-07-02); fix designed (bridge LID→PN resolution). Implementation pending; live validation requires WhatsApp re-pairing.
+Testing — implemented and deployed to `leonardo-pessoal-hml` (2026-07-02):
+- `hermes-infra` bridge patch `scripts/patch_bridge_lid_resolution.py` (wired into `deploy-instance.sh`) resolves the sender LID→phone via `participantAlt`/`remoteJidAlt` then `getPNForLID`; verified `node --check` on the deployed bridge.
+- `hermes-taskme` commit `4c89320`: `identity.resolve` no longer treats LID digits as a phone (resolves via `taskme_channels`), and hook onboarding (share contact / type number) now links WhatsApp LID→phone.
+
+Pending live validation: requires WhatsApp re-pairing and a real non-contact message.
 
 ## Product
 
