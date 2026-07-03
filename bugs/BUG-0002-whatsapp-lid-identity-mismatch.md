@@ -2,11 +2,34 @@
 
 ## Status
 
-Testing — implemented and deployed to `leonardo-pessoal-hml` (2026-07-02):
-- `hermes-infra` bridge patch `scripts/patch_bridge_lid_resolution.py` (wired into `deploy-instance.sh`) resolves the sender LID→phone via `participantAlt`/`remoteJidAlt` then `getPNForLID`; verified `node --check` on the deployed bridge.
-- `hermes-taskme` commit `4c89320`: `identity.resolve` no longer treats LID digits as a phone (resolves via `taskme_channels`), and hook onboarding (share contact / type number) now links WhatsApp LID→phone.
+In Progress — plugin-only approach (2026-07-02).
 
-Pending live validation: requires WhatsApp re-pairing and a real non-contact message.
+**Architecture decision:** we run the stock Hermes image; changes must be
+complementary (plugin / hook / config), never modifications to Hermes-authored
+files — not even via the deploy-time overlay patches. The automatic LID→phone
+resolution can only be done inside the WhatsApp bridge (Baileys API), which is a
+Hermes file, so the bridge patch was **rejected and removed** (`hermes-infra`
+`patch_bridge_lid_resolution.py` deleted; deploy wiring reverted; the deployed
+bridge was regenerated pristine — `getPNForLID` no longer present).
+
+**Adopted solution (plugin-only, `hermes-taskme` commit `4c89320`, deployed):**
+- `identity.resolve` no longer treats LID digits as a phone; it resolves the LID
+  via `taskme_channels` (empty when unknown).
+- Hook onboarding (share contact card / type number) links WhatsApp `LID→phone`,
+  so a person identifies themselves once and is recognized thereafter.
+
+Trade-off accepted: a non-contact must self-identify once (no automatic
+resolution). Open item below.
+
+## Open Item — proactive onboarding prompt
+
+The plugin currently *links* a LID→phone when the unknown sender sends a contact
+card or a number, but it does not yet *prompt* an unknown WhatsApp sender to do
+so (a plain message from an unresolved LID falls through with no TaskMe context).
+For a usable self-identification flow, the bot should reply to an unrecognized
+WhatsApp sender asking them to share their contact/number. This affects all
+unknown WhatsApp DMs, so it is a separate decision — to be confirmed before
+implementing.
 
 ## Product
 
