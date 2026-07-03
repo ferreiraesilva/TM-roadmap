@@ -16,7 +16,7 @@ This work reduces avoidable ban risk but cannot eliminate it while Hermes uses B
 
 The WhatsApp number used by Hermes has experienced Meta enforcement and bans. The current gateway already simulates natural interaction timing and protects reconnection behavior, but those controls do not address the largest identified risk: proactive automated contact with recipients who have not initiated a conversation or explicitly opted in.
 
-TaskMe can currently initiate WhatsApp messages for task assignments and recurring reminders. For the unofficial Baileys channel, the intended eligibility rule is not the formal consent model required by the official API: Hermes must have persistent evidence that the recipient initiated a conversation with that specific bot before any outbound message is allowed. There is currently no centralized enforcement of that rule, per-recipient quota, new-contact quota, global outbound queue, idempotency guarantee, or circuit breaker.
+TaskMe sends WhatsApp messages for task assignments and recurring reminders. For the unofficial Baileys channel, the intended eligibility rule is not the formal consent model required by the official API: Hermes must have persistent evidence that the recipient initiated a conversation with that specific bot before any outbound message is allowed. First-contact enforcement, a global outbound queue, persistent TaskMe idempotency, and cooldown circuit breakers are implemented and awaiting HML validation. Per-recipient and new-contact quotas remain future work.
 
 ## Current Baseline and Avoiding Duplicate Work
 
@@ -29,18 +29,18 @@ Already implemented in `hermes-infra/scripts/patch_bridge_anti_ban.py` and appli
 - composing/upload delay for media;
 - cleanup of old sockets and listeners;
 - exponential reconnect backoff with jitter;
+- one bounded global outbound queue with a configurable minimum gap;
+- automatic cooldown after repeated send or reconnect failures;
+- persistent TaskMe idempotency keys and delivery outcomes;
+- compatibility tests for the versioned bridge overlay;
 - persistent WhatsApp session data under `/opt/data/whatsapp/session`;
 - managed bot persona through SOUL configuration;
 - pinned Baileys revision rather than an uncontrolled rolling dependency.
 
 Known gaps:
 
-- no automated compatibility tests for the bridge patch;
-- no global serialized queue across concurrent sends;
-- no centrally enforced first-contact eligibility model;
-- no deduplication or idempotency for notifications;
 - no per-recipient or new-recipient quotas;
-- no reconnect circuit breaker and operational alerting;
+- no operational Telegram alert when the circuit opens;
 - no consolidated messaging-risk metrics;
 - no documented decision on migration to the official API.
 
