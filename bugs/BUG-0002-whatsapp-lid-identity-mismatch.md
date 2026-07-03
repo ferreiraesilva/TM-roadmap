@@ -1,0 +1,110 @@
+# Bug: WhatsApp LID resolved as phone number breaks identity matching
+
+## Status
+
+Draft
+
+## Product
+
+TaskMe
+
+## Severity
+
+High
+
+## Priority
+
+P1 - High
+
+## Related Area
+
+WhatsApp inbound identity resolution — `taskme/identity.py` (`resolve`, WhatsApp branch), `gateway.whatsapp_identity.normalize_whatsapp_identifier`, and the `taskme_channels` mapping. Affects every phone-scoped flow (charges, queries, digests) because tasks and contacts are keyed by canonical phone.
+
+## Environment
+
+Production (homologation) — `hermes-leonardo-pessoal-hml`, WhatsApp channel (Baileys bot mode).
+
+## Summary
+
+Some WhatsApp messages arrive identified by a LID (`<digits>@lid`, WhatsApp's privacy/linked identifier) instead of the phone JID (`<phone>@s.whatsapp.net`). TaskMe resolves that LID to a "phone" equal to the LID digits, which never matches the real contact phone. As a result the sender is treated as an unknown/wrong identity and phone-scoped matching (open charge, task lookup) fails.
+
+## Current Behavior
+
+`identity.resolve("whatsapp", "<digits>@lid")` returns the LID digits as the phone and links them in `taskme_channels` as a WhatsApp address whose `phone` is the LID, not the real number.
+
+## Expected Behavior
+
+A WhatsApp message from a given person should resolve to that person's canonical phone number, regardless of whether WhatsApp delivered a `@s.whatsapp.net` phone JID or a `@lid` identifier, so that charges, task lookups, digests and queries match the stored contact.
+
+## Steps to Reproduce
+
+1. Have a WhatsApp user whose messages arrive as a `@lid` identifier.
+2. Assign them a task (contact stored with the real phone) and open a charge.
+3. As that user, reply on WhatsApp.
+4. Observe that `identity.resolve` returns the LID (not the phone), so `has_open_charge`/task matching by phone fails and the reply is not associated with the task.
+
+## Evidence
+
+```text
+taskme_channels rows (HML, 2026-07-02):
+  whatsapp addr=236657060135090@lid -> phone=236657060135090
+  whatsapp addr=71709243744259@lid  -> phone=71709243744259
+contacts:
+  Livinha Do Papai = 556299299266   (real phone)
+  Julia            = 556293444942
+The @lid "phones" do not match any real contact phone.
+```
+
+## Impact
+
+- WhatsApp senders identified by LID are not matched to their contact/tasks.
+- Breaks charge replies, task queries, and digests for those users (phone-scoped).
+- Compounds BUG-0001: even with the deterministic reschedule prompt, the reply is not tied to the open charge when the sender resolves to a LID.
+
+## Workaround
+
+```text
+No reliable workaround. Users whose WhatsApp delivers a phone JID
+(<phone>@s.whatsapp.net) are unaffected.
+```
+
+## Suspected Cause
+
+`gateway.whatsapp_identity.normalize_whatsapp_identifier` does not translate a
+`@lid` identifier into the real phone number, so TaskMe's WhatsApp identity branch
+falls back to the LID digits and stores them as the canonical phone.
+
+## Proposed Fix
+
+```text
+To be defined after investigation. Likely direction: resolve LID -> phone using
+the WhatsApp bridge's lid<->pn mapping (Baileys exposes this), performed at the
+gateway/bridge layer so the phone JID reaches the plugin; alternatively, store the
+LID in taskme_channels mapped to the contact's canonical phone and resolve
+inbound LIDs through that mapping. Decide whether the fix belongs in the bridge
+patch (ci/patch_hermes_bridge.py), the gateway whatsapp_identity module, or
+taskme/identity.py.
+```
+
+## Regression Risk
+
+Medium — changes how WhatsApp senders are identified; must not break users who already resolve correctly by phone JID.
+
+## Acceptance Criteria
+
+- [ ] Given a WhatsApp message delivered with a `@lid` identifier, when identity is resolved, then it maps to the sender's canonical phone number.
+- [ ] Given such a sender with an open charge, when they reply, then the reply matches the open charge and is processed.
+- [ ] Existing senders that already arrive as `<phone>@s.whatsapp.net` keep resolving correctly.
+- [ ] Relevant tests are added.
+
+## Related Issues
+
+- BUG-0001 (reschedule reply not answered) — same follow-up flow.
+- Channel scoping: `hermes-taskme` commit `72cdf49`.
+- TaskMe MVP identity model: `/rfcs/RFC-0001-taskme-mvp.md`.
+
+## Notes
+
+Discovered on 2026-07-02 while diagnosing BUG-0001, when the bot's WhatsApp session
+was also found logged out (separate operational issue — re-pair required). Register
+now; investigate after WhatsApp connectivity is restored.
