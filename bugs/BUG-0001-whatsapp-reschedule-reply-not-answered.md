@@ -2,7 +2,7 @@
 
 ## Status
 
-Draft
+Testing — fix deployed to `hermes-leonardo-pessoal-hml` on 2026-07-02 (`hermes-taskme` commit `5f63d72`); awaiting live confirmation.
 
 ## Product
 
@@ -44,11 +44,23 @@ The system should recognize the intent to renegotiate the deadline and, because 
 
 ## Evidence
 
+Confirmed against the live HML database (2026-07-02). Task TM-1002 ("Lave o
+carro do Leonardo") had an OPEN charge for the assignee on the WhatsApp channel:
+
 ```text
-To be collected. Container logs for hermes-leonardo-pessoal-hml at the time of
-the interaction were not captured. Reproduce with logging enabled and attach the
-pre_gateway_dispatch / pre_llm_call trace and the assignee's exact message.
+TASK  TM-1002 status=pendente channel=whatsapp due=2026-07-05
+QUEUE TM-1002 qstatus=aguardando_resposta qchannel=whatsapp phone=556299299266
+EVENTS TM-1002:
+  criada  | assignante | Lave o carro do Leonardo | 07-02 16:01
+  enviada | sistema    | tarefa enviada ao assignado
+  enviada | sistema    | tarefa reenviada ao assignado | 07-02 23:36
 ```
+
+There is no `cobranca` / `reprogramada` event — the assignee's "needs more time"
+reply was never turned into a reschedule. Because an open charge existed,
+`route_inbound` returned `skip` and the hook processed the message, classified it
+as `reprogram`, found no parseable date, and returned `None` (silent fall-through
+to the agent), which did not reliably respond.
 
 ## Impact
 
@@ -64,28 +76,35 @@ The assignee can send a reply that already includes an explicit date
 No workaround for the "needs more time, no date" case.
 ```
 
-## Suspected Cause
+## Confirmed Cause
 
-Hypotheses to be confirmed during investigation:
+`hook._parse_outcome` classifies a "needs more time" message as `reprogram`, but
+`dates.resolve_due` returns `None` when the reply carries no parseable date, so
+`handle_gateway` returned `None` and fell through to the agent. The agent did not
+reliably ask for the new date, so the assignee received nothing. The reschedule
+reply flow had no deterministic prompt for the missing date.
 
-- `hook._parse_outcome` classifies "preciso de mais prazo" as `reprogram`, but `dates.resolve_due` returns `None` (no parseable date), so `handle_gateway` returns `None` and falls through to the agent. The agent is expected to ask for the new date via `taskme_responder`, but may not have prompted — the deterministic path gives up without a deterministic "what is the new date?" reply.
-- Channel scoping (introduced 2026-07-02, commit `72cdf49`): `route_inbound`/`has_open_charge` now filter the open charge by `(phone, channel)`. If the queue row's channel did not match the inbound channel, `route_inbound` would return `allow` and the pending-charge hint would not be injected, lowering the chance the agent prompts for a date. Verify whether the report predates this change.
-- The reply may have arrived as audio, requiring transcription before `taskme_responder`; confirm the message type.
+Ruled out: channel scoping (commit `72cdf49`) was not the cause — the queue row's
+channel matches the inbound WhatsApp channel, so the open charge is found
+correctly.
 
-## Proposed Fix
+## Applied Fix
 
-```text
-To be defined after investigation. Likely direction: when the hook detects a
-reschedule intent with no parseable date AND there is an open charge, send a
-deterministic reply asking for the new date (instead of silently falling
-through), and/or ensure the agent path reliably calls taskme_responder and
-prompts for the date. Add a regression test for "reschedule intent without a
-date".
-```
+`hermes-taskme` commit `5f63d72`:
+
+- `charges.request_new_due(phone, channel)`: when there is an open charge, sends
+  a deterministic prompt (`templates.ask_new_due`) asking for the new date, on
+  the charge's channel, and records a state marker event (`nota`). Anti-loop
+  guard: if the last interaction was already this prompt, it returns `defer` and
+  lets the agent take over instead of re-asking.
+- `hook.handle_gateway`: on a `reprogram` intent with no parseable date, calls
+  `request_new_due`; if it asked, returns `skip` (so the agent does not also
+  respond); otherwise falls through.
+- Regression tests added for "asks once", "does not repeat", and "no open charge".
 
 ## Regression Risk
 
-Medium — touches the deterministic charge-reply routing shared by the "done" and "reprogram" paths.
+Medium — touches the deterministic charge-reply routing shared by the "done" and "reprogram" paths. Mitigated by the anti-loop guard and 3 new tests (full suite: 53 passing).
 
 ## Acceptance Criteria
 
