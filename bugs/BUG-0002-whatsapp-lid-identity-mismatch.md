@@ -2,7 +2,7 @@
 
 ## Status
 
-Draft
+Confirmed — root cause identified in the bridge (2026-07-02); fix designed (bridge LID→PN resolution). Implementation pending; live validation requires WhatsApp re-pairing.
 
 ## Product
 
@@ -68,27 +68,56 @@ No reliable workaround. Users whose WhatsApp delivers a phone JID
 (<phone>@s.whatsapp.net) are unaffected.
 ```
 
-## Suspected Cause
+## Confirmed Cause
 
-`gateway.whatsapp_identity.normalize_whatsapp_identifier` does not translate a
-`@lid` identifier into the real phone number, so TaskMe's WhatsApp identity branch
-falls back to the LID digits and stores them as the canonical phone.
+Investigated in the `hermes-leonardo-pessoal-hml` container (2026-07-02). The
+WhatsApp bridge (`runtime/whatsapp-bridge/bridge.js`, Baileys 7.0.0-rc.9) never
+resolves a LID to a phone number:
+
+- `normalizeWhatsAppId(value)` is trivial — `String(value).replace(':', '@')`. It
+  does not consult any LID map.
+- The sender is derived as `senderId = msg.key.participant || chatId; senderNumber
+  = senderId.replace(/@.*/, '')`. For a `@lid` sender this yields the LID digits.
+- `buildLidMap()` reads `lid-mapping-{phone}.json` files, but nothing ever writes
+  those files, so `lidToPhone` is always empty (dead code).
+
+So every non-contact (addressed by LID) is identified by LID digits, which never
+match a real contact phone. The Python side (`gateway.whatsapp_identity.
+normalize_whatsapp_identifier`) only strips a JID to its numeric core; it cannot
+recover the phone. The fix must happen in the bridge.
+
+Baileys 7.x already carries the phone: the decoded message key exposes
+`remoteJidAlt` / `participantAlt` (the phone JID when addressing mode is `lid`),
+and `sock.signalRepository.lidMapping.getPNForLID(lid)` returns the phone JID
+(Baileys learns and stores LID↔PN mappings on incoming messages —
+`messages-recv.js` `storeLIDPNMappings`).
 
 ## Proposed Fix
 
-```text
-To be defined after investigation. Likely direction: resolve LID -> phone using
-the WhatsApp bridge's lid<->pn mapping (Baileys exposes this), performed at the
-gateway/bridge layer so the phone JID reaches the plugin; alternatively, store the
-LID in taskme_channels mapped to the contact's canonical phone and resolve
-inbound LIDs through that mapping. Decide whether the fix belongs in the bridge
-patch (ci/patch_hermes_bridge.py), the gateway whatsapp_identity module, or
-taskme/identity.py.
-```
+Patch the WhatsApp bridge to resolve the sender's LID to a phone before emitting
+the event:
+
+1. When `senderId` ends with `@lid`, prefer `msg.key.participantAlt` /
+   `msg.key.remoteJidAlt` (already a `@s.whatsapp.net` phone JID).
+2. Fallback to `await sock.signalRepository.lidMapping.getPNForLID(senderJid)`.
+3. If still unresolved, keep the LID (degraded, no worse than today) — candidate
+   for a self-onboarding prompt (ask the sender to share contact / phone), reusing
+   the existing vCard onboarding path.
+
+Placement: a new cross-product bridge patch in `hermes-infra/scripts/` (identity
+is Hermes-core, shared by all products), wired into `deploy-instance.sh` next to
+`patch_bridge_caption.py`, and rolled out first to `leonardo-pessoal-hml`. No
+change needed in TaskMe or the Python identity layer — the bridge starts emitting
+the real phone.
+
+Validation requires a live WhatsApp session (currently unpaired) and a real
+non-contact message, because LID↔PN resolution depends on runtime data.
 
 ## Regression Risk
 
-Medium — changes how WhatsApp senders are identified; must not break users who already resolve correctly by phone JID.
+Medium — changes how WhatsApp senders are identified for every inbound message;
+must not break senders already addressed by phone JID (guard: only rewrite when
+the sender is `@lid`) and must be syntax-checked (node --check) during deploy.
 
 ## Acceptance Criteria
 
