@@ -34,6 +34,10 @@ Três estágios (ver discussão de arquitetura): **1) Adquirir** (específico da
 **2) Enriquecer → Contrato** (IA, agnóstico) → **3) Carregar** (determinístico). O
 contrato fica **materializado** entre 2 e 3 (revisável; classifica-se uma vez).
 
+### Multidimensional media intent (MinhaIncorporadora default)
+
+Media classification must represent independent axes: content, editorial nature, recommended uses, publication readiness and channel format. Retrieval accepts the broker's current destination and ranks matching assets first. Prior social publication does not prevent a drone or environment video from being sent to a customer. The implementation is the configurable MinhaIncorporadora default; deployment, backfill and validation remain isolated per tenant.
+
 ### Taxonomia de mídia (aterrada em Now 111 + Rota Panorama)
 Pasta = categoria; nome do arquivo = sub-tag; conteúdo confirma/enriquece.
 
@@ -77,6 +81,7 @@ bot entrega.
       por categoria.
 - [ ] Como operador, sou avisado do que foi ingerido/classificado e dos erros (RCA).
 - [ ] Como sistema, nunca entrego material de empreendimento errado (ancora no id).
+- [ ] `STORY-0003`: As a broker, I can distinguish customer media from media ready for social publication without making those uses mutually exclusive.
 
 ## Technical Tasks
 
@@ -99,6 +104,13 @@ bot entrega.
 - [ ] **Loader** (`import_json` → `midias` + campos): idempotente, estado completo.
 - [ ] **Gate de revisão humana** (`lotes_importacao`) antes de publicar no banco vivo.
 - [ ] **Console/monitor** (1 profile Hermes): relatório de ingestão + RCA de erro.
+- [ ] **Additive media-intent schema**: editorial nature, recommended uses, publication readiness, formats, signals, confidence and classifier version.
+- [ ] **Image/video classifier v2**: structured content + editorial output; folder names are priors, never the sole source of use.
+- [ ] **Backward-compatible media tool contract**: optional destination, preparation and format in `minhaincorp_midia`.
+- [ ] **Intent-aware ranking**: strict tenant/project/modality boundaries with weighted theme, destination, readiness and format.
+- [ ] **Tenant-isolated resumable backfill**: fill new fields without rewriting category, tags or description; low confidence goes to review.
+- [ ] **Classification and retrieval benchmark**: clean visuals, social creatives, reusable drone content and negative cases.
+- [ ] **Cross-tenant validation**: repeat benchmarks on representative clients to detect domain regressions without blocking the configurable default.
 
 ## Acceptance Criteria
 
@@ -107,3 +119,8 @@ bot entrega.
 - [ ] Arquivos sem extensão e parciais são tratados corretamente (sniff/pular).
 - [ ] Galerias grandes não estouram custo (classificação por pasta/amostra).
 - [ ] Nada de fato comercial inferido de documento.
+- [ ] Content and intended use are independently represented; one asset may support customer delivery and social publication.
+- [ ] Explicit customer requests prioritize clean suitable media; explicit social requests prioritize ready assets and format.
+- [ ] Materially ambiguous generic requests trigger one short clarification.
+- [ ] Existing `minhaincorp_midia` calls and native delivery directives remain compatible.
+- [ ] A tenant rollout and backfill make no change to any other tenant data, files, configuration or channels.
