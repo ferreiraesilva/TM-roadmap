@@ -1,40 +1,40 @@
 # Product Vision: MinhaIncorporadora
 
-## Resumo do Produto
-O **MinhaIncorporadora** é o assistente virtual definitivo para corretores de imóveis, operando diretamente nos canais de comunicação mais utilizados (WhatsApp e Telegram). Ele serve como um braço direito comercial, facilitando o acesso a informações em tempo real e criando um ecossistema de engajamento entre corretores e incorporadoras.
+## Product Summary
+**MinhaIncorporadora** is the ultimate virtual assistant for real estate brokers, operating directly on the communication channels they use most (WhatsApp and Telegram). It acts as a commercial right-hand partner, facilitating real-time data access and fostering a high-engagement ecosystem between brokers and real estate developers (incorporadoras).
 
 ---
 
-## Roadmap de Fases (Visão Geral)
+## Roadmap Phases (Overview)
 
-### 🚀 V1: O Núcleo de Conteúdo e Disponibilidade (Fase Atual)
-*Foco: Automatizar o atendimento diário e prover dados cruciais de forma imediata.*
+### 🚀 V1: Core Content and Availability (Current Phase)
+*Focus: Automating daily support and providing critical data instantly.*
 
-1. **Informações Gerais:** Resposta a dúvidas e detalhes técnicos sobre os empreendimentos.
-2. **Disponibilidade:** Consulta em tempo real de quais unidades estão disponíveis.
-3. **Preços:** Acesso imediato à tabela de preços atualizada de cada unidade.
-4. **Fotos:** Envio contextualizado de imagens e renders (ex: *"me envie 2 fotos da cozinha do Palace"*).
-5. **Vídeos:** Busca e envio de vídeos curtos, passeios virtuais e apresentações.
-6. **Plantas:** Disponibilização de arquivos de plantas para consulta rápida.
-7. **Documentos:** Leitura e envio de documentos chave (ex: Manual do Corretor, memoriais descritivos).
-
----
-
-### 📢 V2: O Canal de Eventos e Campanhas (Fase Futura)
-*Foco: Proatividade e tração de corretores para ações presenciais e comerciais.*
-
-1. **Promoções:** Disparo ativo de campanhas promocionais e tabelas especiais.
-2. **Campanhas de Marketing:** Envio de campanhas vigentes para compartilhamento.
-3. **Convites de Eventos:** Convites automatizados e segmentados para reuniões e lançamentos.
-4. **Confirmação de Presença (RSVP):** Confirmação direta pelo WhatsApp.
-5. **Material de Apoio do Evento:** Envio automático de materiais específicos aos corretores presentes durante a execução de lançamentos e eventos.
+1. **General Information:** Resolve doubts and technical details about developments.
+2. **Availability:** Query unit availability in real time.
+3. **Prices:** Instant access to updated price tables for each unit.
+4. **Photos:** Contextual delivery of images and renders (e.g., *"send me 2 photos of the kitchen at Palace"*).
+5. **Videos:** Search and deliver short videos, virtual tours, and presentations.
+6. **Floor Plans (Plantas):** Quick access and delivery of floor plan files.
+7. **Documents:** Read and deliver key files (e.g., Broker's Manual, descriptive memorials).
 
 ---
 
-### 🏆 V3: O Programa de Fidelidade - Club do Corretor
-*Foco: Retenção, vínculo e gamificação da relação corretor-incorporadora.*
+### 📢 V2: Events and Campaigns Channel (Next Phase)
+*Focus: Proactive engagement and broker traffic generation for in-person and sales events.*
 
-1. **Ledger de Pontos:** Acúmulo de pontuação baseado em metas de vendas, presença física e participação.
-2. **Troca por Material de Vendas:** Troca de pontos por panfletos, impressos e folders físicos.
-3. **Troca por Material de Apoio:** Resgate de itens de suporte no plantão (ex: garrafão/barril de água personalizado, energéticos, barras de cereal, Toblerones para promoções).
-4. **Mesa de Performance de Marketing:** Utilização da equipe interna de marketing da incorporadora para gerar criativos, vídeos e postagens profissionais para as redes sociais do próprio corretor.
+1. **Promotions:** Active broadcast of promotional campaigns and special price tables.
+2. **Marketing Campaigns:** Share active marketing campaigns for brokers to distribute.
+3. **Event Invitations:** Automated, targeted invitations for launch events and meetings.
+4. **RSVP (Presença):** Confirm attendance directly via WhatsApp.
+5. **Event Delivery:** Automate sending support materials during launching events to present brokers.
+
+---
+
+### 🏆 V3: Loyalty Program - Broker's Club (Club do Corretor)
+*Focus: Retention, relationship building, and gamification of the broker-developer relationship.*
+
+1. **Points Ledger:** Accumulate points based on sales goals, event attendance, and training participation.
+2. **Sales Material Redemption:** Exchange points for printed physical materials (flyers, brochures).
+3. **Support Material Redemption:** Redeem support items for the sales stand (e.g., custom water barrels, energy drinks, cereal bars, Toblerones).
+4. **Marketing Assistance:** Access the developer's internal marketing agency to generate professional customized social media posts, videos, and creatives for the broker's personal networks.
