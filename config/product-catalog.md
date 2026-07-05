@@ -86,6 +86,16 @@ Examples:
 - Group behavior rules
 - Group-level response instructions
 
+### Hermes Benchmark
+
+Use for the LLM benchmarking tool. Analyzes and compares performance, latency, and cost of different LLMs for various tasks (e.g. video classification, chat, embeddings).
+
+Examples:
+
+- Benchmarking models for video classification
+- Benchmarking chat models and prompt strategies
+- Comparing embedding models and chunking strategies
+
 ### Hermes Experiments
 
 Use for ideas, prototypes or validations that are not yet mature enough to become an official product or module.
