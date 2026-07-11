@@ -10,7 +10,7 @@ MinhaIncorporadora
 
 ## Parent Initiative
 
-INITIATIVE-0003 — MinhaIncorporadora Knowledge Platform
+INITIATIVE-0003 — ConcienciaTM, Truemobile shared knowledge service
 
 ## Problem
 
@@ -63,7 +63,9 @@ MinhaIncorporadora
 
 - The nightly ingestion pipeline (classify/chunk/embeddings) as the extraction
   engine.
-- A home for the global knowledge base (open question in INITIATIVE-0003).
+- Home of the global base (resolved in INITIATIVE-0003): the `tm-conciencia`
+  service — OKF pages (.md in git) as source of truth, pgvector as a
+  rebuildable index, immutable acervo for artifacts.
 
 ## User Stories
 

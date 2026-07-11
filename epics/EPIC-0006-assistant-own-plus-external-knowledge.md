@@ -10,7 +10,7 @@ MinhaIncorporadora
 
 ## Parent Initiative
 
-INITIATIVE-0003 — MinhaIncorporadora Knowledge Platform
+INITIATIVE-0003 — ConcienciaTM, Truemobile shared knowledge service
 
 ## Problem
 
@@ -54,9 +54,9 @@ MinhaIncorporadora
 ## Dependencies
 
 - EPIC-0005 (produces the global base).
-- The global-base placement decision (INITIATIVE-0003 open question): a shared
-  read-only knowledge database vs. per-client replication drives how retrieval
-  reaches it under the atomic per-client model.
+- Global-base placement (resolved in INITIATIVE-0003): consult-only calls to
+  the ConcienciaTM API at runtime — never replication into client DBs/RAGs.
+  Answers and artifacts are used and discarded client-side.
 
 ## User Stories
 
