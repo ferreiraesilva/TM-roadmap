@@ -57,4 +57,4 @@ canonical, preserving the zero-invention rule (RFC-0003 / AGENTS).
 
 - `hermes-minhaincorporadora` — the backend.
 - `hermes-infra` — `OPENROUTER_API_KEY` secret; data-dir storage.
-- `hermes-roadmap` — `rfcs/RFC-0005-minhaincorporadora-content-ingestion-backend.md`.
+- `TM-roadmap` — `rfcs/RFC-0005-minhaincorporadora-content-ingestion-backend.md`.

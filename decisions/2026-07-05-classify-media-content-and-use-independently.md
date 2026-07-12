@@ -47,5 +47,5 @@ and a published drone video can still explain a customer's view.
 ## Related Repositories
 
 - `hermes-minhaincorporadora` — schema, classifier, search, tool and benchmark.
-- `hermes-roadmap` — product decision and phased delivery plan.
+- `TM-roadmap` — product decision and phased delivery plan.
 - `hermes-infra` — product defaults with tenant-level overrides and isolated rollout.

@@ -42,14 +42,16 @@ It stores:
 * Documentation templates
 * Operational catalogs
 
-Implementation happens in dedicated `hermes-*` repositories, all part of the
-**Hermes Ecosystem** GitHub Project:
+Implementation happens in dedicated repositories under the **TrueMobile Portfolio**:
 
-* `hermes-taskme`
-* `hermes-minhaincorporadora`
-* `hermes-multgrupo`
-* `hermes-infra` (deployment/ops source of truth)
-* future: `hermes-investimentos`, `hermes-governanca`
+* `MinhaIncorporadora` — standalone real estate sales assistant.
+* `tm-infra` — standalone production infrastructure manager.
+* `Hermes` — base platform and its direct plugins/dependents:
+  * `hermes-agent` — core agent platform.
+  * `hermes-taskme` — TaskMe product.
+  * `hermes-multgrupo` — WhatsApp Group Personality module.
+  * `hermes-benchmark` — LLM benchmarking tool.
+  * `hermes-infra` — legacy infrastructure (being decommissioned/integrated).
 
 ## Product Catalog Rule
 
@@ -660,5 +662,13 @@ The human may:
 * Request changes
 * Accept the result
 * Close the item after validation
-
 Generated code should be treated as a proposed implementation until accepted by the human.
+
+## LLM Selection Guidelines
+
+Whenever the human requests to execute a task (e.g., using "executar"), the AI agent must analyze the task's complexity and suggest the most cost-efficient LLM from the available list to balance token consumption with implementation quality:
+
+*   **Gemini 3.5 Flash (Low / Medium / High):** Suggest for low-complexity tasks, code generation scaffolding, simple refactoring, or running/parsing scripts.
+*   **Gemini 3.1 Pro (Low / High):** Suggest for medium-complexity coding, database schema designs, API endpoints development, and test suite writing.
+*   **Claude Sonnet 4.6 (Thinking):** Suggest for highly complex logic, UI/UX prompting instructions, structural refactorings, or debug tasks requiring deep reasoning.
+*   **Claude Opus 4.6 (Thinking) / GPT-OSS 120B (Medium):** Suggest for critical architectural reviews or complex design decisions.

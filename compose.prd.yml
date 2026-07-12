@@ -1,0 +1,21 @@
+services:
+  hermes-roadmap-prd:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hermes-roadmap-prd
+    restart: always
+    environment:
+      - DATABASE_URL=sqlite:////app/data/tm_roadmap.db
+    volumes:
+      - hermes_roadmap_data:/app/data
+    networks:
+      - caiaweb_default
+
+networks:
+  caiaweb_default:
+    external: true
+
+volumes:
+  hermes_roadmap_data:
+    name: hermes_roadmap_data_prd

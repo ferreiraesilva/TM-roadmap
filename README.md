@@ -1,10 +1,10 @@
-# Hermes Roadmap
+# TrueMobile Roadmap (TM-roadmap)
 
-This repository centralizes the roadmap, product planning, technical decisions, RFCs, epics, user stories, spikes and documentation for the Hermes ecosystem.
+This repository centralizes the roadmap, product planning, technical decisions, RFCs, epics, user stories, spikes and documentation for the TrueMobile portfolio.
 
-Hermes is the base agent platform used to build automation, communication and productivity features and products, such as WhatsApp group personalities, task control workflows, reminders, integrations and other Hermes-based solutions.
+TrueMobile encompasses independent projects such as MinhaIncorporadora, tm-infra, and the Hermes Platform (the base agent runtime and its dependents like TaskMe and SemControle).
 
-This repository is not primarily a source-code repository. Its purpose is to organize the evolution of the Hermes ecosystem and connect ideas, features, products, issues, repositories and releases in one place.
+This repository is not primarily a source-code repository. Its purpose is to organize the evolution of the TrueMobile projects and connect ideas, features, products, issues, repositories and releases in one place.
 
 ## Repository Language
 
@@ -64,15 +64,11 @@ This repository is used for:
 * Release planning
 * Documentation templates
 
-Actual implementation happens in dedicated repositories. All Hermes systems use
-the `hermes-*` naming convention and belong to the **Hermes Ecosystem** GitHub
-Project:
+Actual implementation happens in dedicated repositories. The TrueMobile portfolio consists of:
 
-* `hermes-taskme` — TaskMe
-* `hermes-minhaincorporadora` — MinhaIncorporadora
-* `hermes-multgrupo` — WhatsApp Group Personality
-* `hermes-infra` — deployment/ops source of truth (inventory, environments, Postgres)
-* future: `hermes-investimentos`, `hermes-governanca`
+* `MinhaIncorporadora` — Standalone real estate sales assistant.
+* `tm-infra` — Standalone production infrastructure (inventory, environments, database cluster, edge routing).
+* `Hermes` — Base agent platform (`hermes-agent`) and its direct plugins/dependents (`hermes-taskme`, `hermes-multgrupo`, `SemControle`, etc.).
 
 ## What Belongs Here
 
@@ -304,7 +300,7 @@ Use a Decision Record when a relevant product or technical decision has already 
 
 Examples:
 
-* Use personal GitHub Project for Hermes roadmap
+* Use personal GitHub Project for TrueMobile roadmap
 * Treat TaskMe as a standalone Hermes-based product
 * Store planning records in English
 * Use RFCs before large product changes

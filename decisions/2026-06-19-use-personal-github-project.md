@@ -1,4 +1,4 @@
-# Use Personal GitHub Project for Hermes Roadmap
+# Use Personal GitHub Project for TrueMobile Roadmap
 
 ## Date
 
@@ -18,7 +18,7 @@ A GitHub Organization would be useful in the future, but the current setup will 
 
 Use a personal GitHub Project to centralize the Hermes ecosystem roadmap.
 
-Create a `hermes-roadmap` repository to store product vision, RFCs, decisions, templates and cross-repository planning.
+Create a `TM-roadmap` repository to store product vision, RFCs, decisions, templates and cross-repository planning.
 
 ## Consequences
 

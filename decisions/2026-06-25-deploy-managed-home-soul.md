@@ -46,4 +46,4 @@ the product repository and is expected to be refined there.
 
 - `hermes-infra` — deploy, inventory, catalog.
 - `hermes-minhaincorporadora` — SOUL template and runtime personalization.
-- `hermes-roadmap` — `rfcs/RFC-0004-deploy-managed-home-soul.md`.
+- `TM-roadmap` — `rfcs/RFC-0004-deploy-managed-home-soul.md`.

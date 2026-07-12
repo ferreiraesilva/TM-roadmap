@@ -145,7 +145,7 @@ Typing delays and presence simulation are heuristics, not compliance controls. C
 
 - `hermes-taskme`: first-contact list, activation flow, outbound eligibility enforcement, notification idempotency, and PostgreSQL migrations.
 - `hermes-infra`: account inventory, gateway queue overlay, pacing configuration, circuit breaker, alerts, deployment tests, and canary procedure.
-- `hermes-roadmap`: RFC, implementation sequencing, acceptance evidence, and the Cloud API decision record.
+- `TM-roadmap`: RFC, implementation sequencing, acceptance evidence, and the Cloud API decision record.
 - Upstream Hermes Agent: monitored dependency; upstream changes should be adopted only after local compatibility validation.
 
 ## Dependencies

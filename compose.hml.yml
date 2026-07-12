@@ -1,0 +1,21 @@
+services:
+  hermes-roadmap-hml:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hermes-roadmap-hml
+    restart: always
+    environment:
+      - DATABASE_URL=sqlite:////app/data/tm_roadmap.db
+    volumes:
+      - hermes_roadmap_data:/app/data
+    networks:
+      - tm-network
+
+networks:
+  tm-network:
+    external: true
+
+volumes:
+  hermes_roadmap_data:
+    name: hermes_roadmap_data

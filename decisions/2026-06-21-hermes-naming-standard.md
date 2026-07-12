@@ -25,7 +25,7 @@ All Hermes repositories use the `hermes-<name>` prefix and belong to the
 | `TaskMe` | `hermes-taskme` |
 | `MinhaIncorporadora` | `hermes-minhaincorporadora` |
 | `Hermes_MultGrupo` | `hermes-multgrupo` |
-| (already) | `hermes-infra`, `hermes-roadmap` |
+| (already) | `hermes-infra`, `TM-roadmap` |
 | future | `hermes-investimentos`, `hermes-governanca` |
 
 ### Deployment resources (defined in `hermes-infra`)

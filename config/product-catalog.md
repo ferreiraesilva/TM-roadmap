@@ -1,6 +1,6 @@
 # Product Catalog
 
-This file is the single source of truth for product names used across the Hermes ecosystem.
+This file is the single source of truth for product names used across the TrueMobile portfolio.
 
 AI agents must use the product names defined here when filling the `Product` field in initiatives, epics, user stories, technical tasks, spikes, bugs, RFCs and decision records.
 
@@ -8,115 +8,50 @@ Do not create product name variations inside records.
 
 If a new product, module or experiment is needed, the AI agent must propose an update to this catalog before using the new product name as an official value.
 
-## Product Values
+## Product Hierarchy & Values
 
-### Hermes Core
+The TrueMobile portfolio is organized into independent domains and the base agent platform (Hermes):
 
+### 1. Standalone Products & Infrastructure
+
+These projects have their own lifecycle, repositories, and do not depend on the Hermes Agent core, though they may share operational infrastructure.
+
+#### MinhaIncorporadora
+Use for the Sales Manager's Assistant product. The assistant serves the brokers of partner agencies on behalf of a real estate company's Sales Manager (Gerente de Vendas); it does not impersonate a broker.
+- **Scope:** Independent application, deploy compose, provisioning, and database-per-client postgres cluster.
+- **Examples:** Real-time unit search, pricing, photo/video/floor-plan delivery, and nightly ingestion/RAG pipeline.
+
+#### tm-infra
+Use for the TrueMobile production infrastructure cluster, global configurations, routing, and operations.
+- **Scope:** Base servers, pgvector-enabled Postgres cluster configuration, Caddy/Nginx reverse proxy, edge routing, and global deployment playbooks/scripts.
+
+---
+
+### 2. Hermes Platform & Dependents
+**Hermes Platform** is the base agent runtime/core. The following products and modules run on top of Hermes or are direct plugins of it:
+
+#### Hermes Core
 Use for changes that belong directly to the Hermes base platform.
+- **Scope:** Core agent behavior, message processing lifecycle, base integrations, and shared capabilities.
 
-Examples:
+#### TaskMe
+Use for the Hermes-based task control and reminder product.
+- **Scope:** Task creation, multi-user assignment, daily reminders, and due date rescheduling via chat.
+- **Dependency:** Dependent on `Hermes Core`.
 
-- Core agent behavior
-- Message processing
-- Base integrations
-- Shared Hermes capabilities
-- Platform-level configuration
+#### SemControle
+Use for the personal expense tracking and categorization tool.
+- **Scope:** Log expenses via text or voice, auto-categorization, deterministic summaries/sums, and multi-user privacy isolation.
+- **Dependency:** Shipped as an auto-loaded backend plugin in `hermes-agent`.
 
-### TaskMe
+#### WhatsApp Group Personality
+Use for the module that allows each WhatsApp group to have its own behavior, tone, rules and contextual instructions.
+- **Dependency:** Dependent on `Hermes Core`.
 
-Use for the Hermes-based task control product.
+#### Hermes Benchmark
+Use for the LLM benchmarking tool. Analyzes and compares performance, latency, and cost of different LLMs for various tasks.
+- **Dependency:** Dependent on `Hermes Core`.
 
-Examples:
-
-- Task creation
-- Task assignment
-- Task reminders
-- Due date rescheduling
-- Task follow-up workflows
-
-### MinhaIncorporadora
-
-Use for the Hermes-based Sales Manager's Assistant product. The assistant serves
-the brokers of partner agencies on behalf of a real estate company's Sales Manager
-(Gerente de Vendas); it does not impersonate a broker. See
-`/rfcs/RFC-0003-minhaincorporadora-persona-model-correction.md`.
-
-Examples:
-
-- Listing available units and developments
-- Answering questions about pricing and payment options
-- Sending media (floor plans, photos)
-- Escalating to the broker's Sales Manager when needed
-- Ingesting, classifying and structuring developer content (files, floor plans,
-  price tables) into searchable knowledge (see RFC-0005)
-- One developer per container/bot (physical single-tenant)
-
-### Investimentos
-
-Use for the Hermes-based investment assistant product. Typically runs alongside
-the personal assistant in the same profile/bot (shared objective).
-
-Examples:
-
-- Investment profile and goals
-- Portfolio questions and follow-up
-- Group + profile concept (see related roadmap notes)
-
-Scope: To be defined.
-
-### Governança
-
-Use for the Hermes-based governance product. Operates on its own profile/bot.
-
-Examples:
-
-- Governance and compliance workflows
-- Policy follow-up
-
-Scope: To be defined.
-
-### WhatsApp Group Personality
-
-Use for the Hermes module or product that allows each WhatsApp group to have its own behavior, tone, rules and contextual instructions.
-
-Examples:
-
-- Group-specific personality
-- Group tone configuration
-- Group behavior rules
-- Group-level response instructions
-
-### Hermes Benchmark
-
-Use for the LLM benchmarking tool. Analyzes and compares performance, latency, and cost of different LLMs for various tasks (e.g. video classification, chat, embeddings).
-
-Examples:
-
-- Benchmarking models for video classification
-- Benchmarking chat models and prompt strategies
-- Comparing embedding models and chunking strategies
-
-### Hermes Experiments
-
-Use for ideas, prototypes or validations that are not yet mature enough to become an official product or module.
-
-Examples:
-
-- Proofs of concept
-- Early experiments
-- Technical validations
-- Uncommitted ideas
-
-### Other
-
-Use only when no existing product value applies.
-
-When using `Other`, the AI agent must add an open question or recommendation asking whether a new product should be added to this catalog.
-
-## Product Naming Rules
-
-- Use exactly the product names listed in this file.
-- Do not abbreviate product names.
-- Do not create synonyms.
-- Do not create variations such as `Hermes`, `WhatsApp Personality`, `Group Personality` or `Task Manager`.
-- Prefer updating this catalog over spreading new product names across templates, issues or documentation.
+#### Hermes Experiments
+Use for early-stage prototypes, spikes, or validations not yet mature enough to become official products or modules.
+- **Dependency:** Dependent on `Hermes Core`.

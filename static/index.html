@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrueMobile Roadmap</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS Style -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Marked.js for Premium Markdown Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <i class="fa-solid fa-network-wired logo-icon"></i>
+                <h1>TrueMobile <span>Roadmap</span></h1>
+            </div>
+            
+            <div class="search-bar-container">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="search-input" placeholder="Buscar iniciativas, épicos, histórias...">
+            </div>
+
+            <div class="header-actions">
+                <button id="btn-seed" class="btn btn-secondary">
+                    <i class="fa-solid fa-database"></i> Re-importar Seed
+                </button>
+                <button id="btn-new-node" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i> Novo Item
+                </button>
+            </div>
+        </header>
+
+        <!-- Subheader with Filters and Legend -->
+        <div class="app-subheader">
+            <div class="filters-container" id="status-filters">
+                <span class="filter-label"><i class="fa-solid fa-filter"></i> Status:</span>
+                <button class="filter-tab active" data-status="draft">Drafts</button>
+                <button class="filter-tab active" data-status="in progress">Em Progresso</button>
+                <button class="filter-tab" data-status="completed">Finalizados</button>
+                <button class="filter-tab active" data-status="pending">Pendentes</button>
+            </div>
+            <div class="legend-container">
+                <span class="legend-item" data-tooltip="Produto: Entidade máxima. Representa um software ou sistema principal (ex: TaskMe, MinhaIncorporadora)."><i class="fa-solid fa-cubes icon-product"></i> Produto</span>
+                <span class="legend-item" data-tooltip="Iniciativa: Grandes temas de negócio ou metas macro de um produto, que demandam um conjunto de entregáveis."><i class="fa-solid fa-bolt icon-initiative"></i> Iniciativa</span>
+                <span class="legend-item" data-tooltip="Épico: Um bloco de trabalho maior e estruturado, que pode ser dividido em User Stories menores."><i class="fa-solid fa-box icon-epic"></i> Épico</span>
+                <span class="legend-item" data-tooltip="User Story: Requisito de funcionalidade sob a perspectiva do usuário final para entrega de valor contínuo."><i class="fa-solid fa-file-lines icon-story"></i> Story</span>
+                <span class="legend-item" data-tooltip="Bug: Defeitos, falhas ou comportamentos inesperados no sistema que precisam de correção."><i class="fa-solid fa-bug icon-bug"></i> Bug</span>
+                <span class="legend-item" data-tooltip="RFC (Request for Comments): Documento técnico de proposta arquitetural para debate e alinhamento de engenharia."><i class="fa-solid fa-lightbulb icon-rfc"></i> RFC</span>
+                <span class="legend-item" data-tooltip="Decision (ADR): Registro formal de uma decisão técnica relevante, seus contextos e consequências."><i class="fa-solid fa-circle-check icon-decision"></i> Decision</span>
+                <span class="legend-item" data-tooltip="Spike: Pesquisa exploratória de tempo limitado usada para entender viabilidade técnica ou arquitetural."><i class="fa-solid fa-compass icon-spike"></i> Spike</span>
+            </div>
+        </div>
+
+        <!-- Main Workspace -->
+        <main class="app-workspace">
+            <!-- Sidebar (Tree view) -->
+            <aside class="app-sidebar">
+                <div class="sidebar-header">
+                    <h2>Navegador de Nós</h2>
+                    <button id="btn-expand-all" title="Expandir Tudo"><i class="fa-solid fa-expand"></i></button>
+                    <button id="btn-collapse-all" title="Recolher Tudo"><i class="fa-solid fa-compress"></i></button>
+                </div>
+                <div class="tree-container" id="tree-root">
+                    <div class="loading-spinner">
+                        <i class="fa-solid fa-circle-notch fa-spin"></i> Carregando árvore...
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Details View -->
+            <section class="app-details-panel" id="details-panel">
+                <div class="empty-state" id="empty-state">
+                    <i class="fa-solid fa-folder-open empty-icon"></i>
+                    <h3>Selecione um item na árvore</h3>
+                    <p>Clique em qualquer iniciativa, épico, história ou documento técnico para visualizar e editar os detalhes.</p>
+                </div>
+
+                <div class="details-content hidden" id="details-content">
+                    <div class="details-header">
+                        <div class="title-section">
+                            <span class="node-id-tag" id="node-id">#42</span>
+                            <h2 class="node-title" id="node-title-display">Título do Nó</h2>
+                        </div>
+                        <div class="meta-section">
+                            <span class="badge badge-type" id="badge-type">Initiative</span>
+                            <span class="badge badge-status" id="badge-status">Draft</span>
+                            <span class="meta-date"><i class="fa-regular fa-clock"></i> <span id="node-updated-at">--/--/----</span></span>
+                        </div>
+                    </div>
+
+                    <div class="details-body markdown-body" id="node-body">
+                        <!-- Rendered Markdown goes here -->
+                    </div>
+
+                    <div class="details-actions">
+                        <button id="btn-edit" class="btn btn-secondary"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
+                        <button id="btn-delete" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i> Excluir</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal for Creating/Editing Node -->
+    <div class="modal-overlay hidden" id="node-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modal-title">Novo Item no Roadmap</h3>
+                <button class="modal-close" id="btn-close-modal">&times;</button>
+            </div>
+            <form id="node-form" class="modal-form">
+                <input type="hidden" id="form-node-id">
+                
+                <div class="form-group" id="form-group-code">
+                    <label for="form-code">ID (Código)</label>
+                    <input type="text" id="form-code" readonly placeholder="[Autogerado ao salvar]">
+                    <small class="form-help-text" style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-top: 4px;">Este identificador é vinculado ao Tipo e não pode ser editado.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="form-title">Título *</label>
+                    <input type="text" id="form-title" required placeholder="Ex: Sincronização comercial de dados">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="form-type">Tipo *</label>
+                        <select id="form-type" required>
+                            <option value="product">Produto</option>
+                            <option value="initiative">Iniciativa</option>
+                            <option value="epic">Épico</option>
+                            <option value="story">User Story</option>
+                            <option value="bug">Bug</option>
+                            <option value="decision">Decision</option>
+                            <option value="rfc">RFC</option>
+                            <option value="spike">Spike</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="form-status">Status</label>
+                        <select id="form-status">
+                            <option value="Draft">Draft</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Pending Approval">Pending Approval</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="form-parent-id">Item Pai (Hierarquia)</label>
+                    <select id="form-parent-id">
+                        <option value="">Nenhum (Nível Raiz)</option>
+                        <!-- Node options will be populated dynamically -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="form-description">Descrição (Suporta Markdown)</label>
+                    <textarea id="form-description" rows="10" placeholder="## Resumo&#10;Escreva o objetivo e escopo usando markdown..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="btn-cancel-modal" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden">Notificação</div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -54,7 +54,7 @@ This decision supersedes the framing in commit `6282b37`.
 
 ## Related Repositories
 
-- `hermes-roadmap` — `rfcs/RFC-0003-minhaincorporadora-persona-model-correction.md`.
+- `TM-roadmap` — `rfcs/RFC-0003-minhaincorporadora-persona-model-correction.md`.
 - `hermes-minhaincorporadora` — persona, escalation, schema and docs changes.
 - `hermes-infra` — owns concrete EBM/City deployments; corrected vocabulary should
   be used in any future client-facing description.
