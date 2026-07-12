@@ -12,10 +12,11 @@ covers ConcienciaTM's OWN credentials (its database, its OpenRouter key).
 
 | Credential | Location | Notes |
 |---|---|---|
-| `role_conciencia` DB password | MAC02 host: `/home/leonardo/.conciencia_db_password.txt` (chmod 600) | generated 2026-07-10 during provisioning (F1.2); must move into `.env.conciencia` (gitignored) on the deploy host at F1.10 |
+| `role_conciencia` DB password | MAC02 host: `/home/leonardo/.conciencia_db_password.txt` (chmod 600) + `.env.conciencia` (gitignored) at `/home/leonardo/projects/tm-conciencia/` | generated 2026-07-10 (F1.2); **live in `.env.conciencia` since F1.10 deploy (2026-07-11)** |
 | Postgres admin password (tm-postgres-hml) | `tm-infra/environments/hml/.env` (`POSTGRES_PASSWORD`) on MAC02 | shared cluster admin; consumed by `database/provision/001_conciencia_database.sql` via `scripts/database/provision.sh` |
-| OpenRouter API key (ConcienciaTM's own) | MAC02 host: `/home/leonardo/.conciencia_openrouter_key.txt` (chmod 600); must move into `.env.conciencia` (gitignored) at F1.10 deploy | **must be its own key, never EBM's or City's** — issued by Leo 2026-07-11, marked temporary, **rotation planned by Leo** |
-| Consumer API keys (`tmc_ebm_...`, `tmc_city_...`) | `db_conciencia` → `consumidores` table (hash only) + this registry once emitted | pending F1.4/F1.5; plaintext exists only at emission time, given once to the consumer's env |
+| OpenRouter API key (ConcienciaTM's own) | MAC02 host: `/home/leonardo/.conciencia_openrouter_key.txt` (chmod 600) + `.env.conciencia` at `/home/leonardo/projects/tm-conciencia/` | **must be its own key, never EBM's or City's** — issued by Leo 2026-07-11, marked temporary, **rotation planned by Leo**. **Live and in active use since F1.10** (real embeddings running). |
+| Consumer API keys (`tmc_ebm_...`, `tmc_city_...`) | `db_conciencia` → `consumidores` table (hash only) + this registry once emitted | mechanism ready since F1.4/F1.5; none issued to a real consumer yet — first one is F1.11 (MinhaIncorporadora tool) |
+| Bootstrap/ops admin key | Emitted on demand via `docker exec conciencia-api-1 python scripts/admin_consumidor.py emitir --escopo admin`, used once, revoked immediately after | not a standing credential — see F1.10 log entry in `tm-conciencia/progresso.md` for the pattern |
 
 ## Rotation procedures
 
