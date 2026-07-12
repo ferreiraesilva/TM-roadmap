@@ -2,7 +2,11 @@
 
 ## Status
 
-Draft
+In Progress — F3.1 (mega-prompt) delivered 2026-07-12. See
+`tm-conciencia/docs/design/prompt-claude-design.md` and
+`tm-conciencia/progresso.md`. All five backend jobs it needs (F2.1–F2.10)
+are complete and deployed. Next: run the prompt through claude-design and
+iterate (F3.2) before any front-end code is written.
 
 ## Product
 
@@ -42,12 +46,15 @@ command line entirely for knowledge work.
    (knowledge-only vs knowledge + deliverable artifact); watch
    extraction/distillation status.
 2. **See knowledge** — browse/search OKF pages and the acervo; see each page's
-   sources, history (git log) and which consumers query what.
+   sources, revision history (`okf_revisoes`) and which consumers query what.
 3. **Approve (curation)** — a conflict/merge queue: when a new source diverges
    from an existing page, the distiller flags it and the curator decides
    (accept, reject, edit); nothing merges silently on conflict.
-4. **Edit knowledge** — edit an OKF page directly in the UI (persisted as a
-   git commit, keeping the versioned-knowledge guarantee).
+4. **Edit knowledge** — edit an OKF page directly in the UI (persisted to
+   disk + a revision recorded in `okf_revisoes`, keeping the
+   versioned-knowledge guarantee — git was removed from OKF persistence on
+   2026-07-12, see `tm-conciencia/docs/02-arquitetura.md`; history moved to
+   Postgres ahead of a planned OKF/acervo migration to a GCP bucket).
 5. **Retire artifacts** — mark acervo files as no-longer-deliverable (agents
    stop receiving them) without destroying history; optional hard removal as
    an explicit, separate action.
@@ -71,7 +78,7 @@ Plus:
    progress → the topic page updates (or a conflict lands in the queue).
 3. Opens the curation queue, reviews a flagged divergence side-by-side,
    approves the merge.
-4. Searches a page, fixes a phrase inline (git commit under the hood).
+4. Searches a page, fixes a phrase inline (revision recorded under the hood).
 5. Retires an outdated deck so agents stop delivering it.
 
 ## Target Repository
@@ -91,17 +98,17 @@ to the ConcienciaTM API.
 - [ ] As the operator, I add knowledge (any modality) from a UI, never the CLI.
 - [ ] As the operator, I browse and search everything the base knows, with sources and history.
 - [ ] As the curator, I get a queue of conflicts and nothing merges silently when sources diverge.
-- [ ] As the curator, I edit an OKF page in the UI and it lands as a git commit.
+- [ ] As the curator, I edit an OKF page in the UI and it lands as a recorded revision (`okf_revisoes`).
 - [ ] As the operator, I retire an artifact so agents stop delivering it, without losing history.
 - [ ] As a client, I manage only my own scope.
 
 ## Technical Tasks
 
-- [ ] **Write the claude-design mega-prompt** (screens, flows, roles, entities, states) — first deliverable.
+- [x] **Write the claude-design mega-prompt** (screens, flows, roles, entities, states) — first deliverable. Done 2026-07-12; also closed 3 real read-API gaps (page browse/detail/history, audit listing) found while writing it, so the prompt describes the actual beta API, not an imagined one.
 - [ ] Run the design phase with claude-design; iterate.
 - [ ] Authenticated UI with role→scope enforcement.
 - [ ] Submission flow (upload/link/text + scope + retention) with status feedback.
-- [ ] OKF browse/search/edit views (edit = git commit via API).
+- [ ] OKF browse/search/edit views (edit = revision recorded via API).
 - [ ] Curation queue (conflict review: side-by-side, accept/reject/edit).
 - [ ] Acervo management (list, retire-from-delivery, explicit hard delete).
 
@@ -110,5 +117,5 @@ to the ConcienciaTM API.
 - [ ] Zero CLI needed for the five jobs (enter, see, approve, edit, retire).
 - [ ] Every ingestion option (modality, scope, retention) is usable from the UI.
 - [ ] Conflicting merges always pass through human approval.
-- [ ] UI edits are versioned (visible in `tm-conciencia` git history).
+- [ ] UI edits are versioned (visible via `GET /v1/okf/{slug}` history, backed by `okf_revisoes`).
 - [ ] Scope boundaries enforced in UI and backend.
