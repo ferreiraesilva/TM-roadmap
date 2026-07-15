@@ -52,11 +52,34 @@ Brokers interacting with the MinhaIncorporadora sales assistant on messaging cha
 
 ## Findings
 
-*(To be filled during the investigation)*
+We executed a benchmark comparing three primary approaches using an audio test file (14-second WAV file, 576 KB) over the OpenRouter API:
+
+1. **Dedicated Speech-to-Text Endpoint (`openai/whisper-1` via `/audio/transcriptions`):**
+   - **Latency:** ~1.8 - 2.04 seconds.
+   - **Cost:** $0.0014 per request ($0.006 per minute / $0.0001 per second).
+   - **Accuracy:** Excellent. Correctly spelled the proper noun "Nuphonic" and delivered punctuation naturally.
+   - **Pros:** Fast execution, high accuracy on specialized terms.
+   - **Cons:** More expensive than Gemini multimodal alternatives.
+
+2. **Multimodal LLM (`google/gemini-2.5-flash-lite` via `/chat/completions`):**
+   - **Latency:** ~2.70 seconds.
+   - **Cost:** $0.000129 per request (approximately **11 times cheaper** than Whisper-1).
+   - **Accuracy:** Good. Transcribed standard speech perfectly but missed the specific proper noun "Nuphonic" (transcribed as "Nthnik").
+   - **Pros:** Extremely cost-efficient ($0.10/M prompt tokens, $0.30/M audio tokens).
+   - **Cons:** Slightly higher latency, minor proper noun spelling issues.
+
+3. **Multimodal LLM (`google/gemini-2.5-flash` via `/chat/completions`):**
+   - **Latency:** ~2.57 seconds.
+   - **Cost:** $0.0004885 per request (approximately **3 times cheaper** than Whisper-1).
+   - **Accuracy:** Very Good. Transcribed the proper noun as "Nuthonic".
+   - **Pros:** Better reasoning/context-aware transcription than Lite.
+   - **Cons:** Slower than Whisper, more expensive than Lite.
 
 ## Recommendation
 
-*(To be filled during the investigation)*
+For the **MinhaIncorporadora** production environment:
+- **Primary Recommendation:** Use **`google/gemini-2.5-flash-lite`** as the default option because of its unparalleled cost efficiency (nearly 11x cheaper than Whisper-1) and acceptable latency (~2.7s). Since broker audio messages mostly contain common speech (e.g. asking for floor plans, prices, or handling general questions), standard Portuguese language spelling is sufficient, and the LLM's context window can rectify minor spelling errors.
+- **Fallback/Alternative:** If high accuracy on complex proper nouns (e.g., specific buyer names or exotic neighborhood names) is critical, **`openai/whisper-1`** can be used as a premium alternative.
 
 ## Follow-up Issues
 
