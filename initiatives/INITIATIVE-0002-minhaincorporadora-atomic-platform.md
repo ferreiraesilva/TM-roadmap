@@ -76,10 +76,14 @@ Done:
 - [x] Shared nginx edge ingress (one ngrok, path-routed per client)
 - [x] EBM migrated to atomic model and live
 - [x] City migrated to atomic model and live (data imported from legacy)
+- [x] Nightly ingestion routine per tenant with scheduler, diagnostics and cost report
 
 Pending (backlog):
 
-- [ ] **Nightly ingestion routine port** — discover → classify (image/document/video) → chunk+embeddings → cost summary/notify, wired into each client's scheduler + cron. **HIGH PRIORITY.**
+- [ ] **IAM and organizational hierarchy (EPIC-0008)** - implementation published;
+      configure and homologate City/EBM independently.
+- [ ] **Commercial and marketing analytics (EPIC-0009)** - event taxonomy and
+      nightly curated aggregates after IAM stabilization.
 - [ ] City media stash (bring bytes from the legacy City container into city storage)
 - [ ] Per-tenant rate limiting at the edge (protect a client from its own flood)
 - [ ] Configuration & credentials management front-end (register/rotate per-client keys: DB URL, bot token, OpenRouter keys)
