@@ -4,7 +4,7 @@ const API_BASE = './api';
 let treeData = [];
 let allNodesList = [];
 let selectedNodeId = null;
-const currentFilters = new Set(['draft', 'in progress', 'pending']);
+const currentFilters = new Set(['backlog', 'to do', 'doing']);
 const nodeExpandedStates = new Map(); // id -> boolean (expanded state)
 
 // Hierarchy restrictions
@@ -125,17 +125,15 @@ function groupChildren(children, parentNodeId) {
     return result;
 }
 
-// Status matching logic
+// Status matching logic. Canonical status vocabulary (English, exact match)
+// is Backlog / To Do / Doing / Done / Canceled -- see seed_db.py:normalize_status
+// for the same vocabulary on the backend. A status that doesn't match any of
+// these (legacy/unexpected value) falls back to Backlog, same as an empty one.
 function matchStatus(nodeStatus, activeFilters) {
-    if (!nodeStatus) return false;
-    const status = nodeStatus.toLowerCase();
-    
-    if (activeFilters.has('draft') && status.includes('draft')) return true;
-    if (activeFilters.has('in progress') && (status.includes('in progress') || status.includes('active') || status.includes('ativo') || status.includes('progresso') || status.includes('desenvolvimento') || status.includes('piloto') || status.includes('pilot'))) return true;
-    if (activeFilters.has('completed') && (status.includes('completed') || status.includes('finalizado') || status.includes('concluido') || status.includes('concluído') || status.includes('done') || status.includes('entregue') || status.includes('sucesso'))) return true;
-    if (activeFilters.has('pending') && (status.includes('pending') || status.includes('pendente') || status.includes('aprovação') || status.includes('aprovacao') || status.includes('approval'))) return true;
-    
-    return false;
+    const status = (nodeStatus || '').toLowerCase().trim();
+    const known = ['backlog', 'to do', 'doing', 'done', 'canceled'];
+    const normalized = known.includes(status) ? status : 'backlog';
+    return activeFilters.has(normalized);
 }
 
 // Recursive Tree Filtering by Status
@@ -172,7 +170,6 @@ const nodeUpdatedAt = document.getElementById('node-updated-at');
 const nodeBody = document.getElementById('node-body');
 
 const btnNewNode = document.getElementById('btn-new-node');
-const btnSeed = document.getElementById('btn-seed');
 const btnEdit = document.getElementById('btn-edit');
 const btnDelete = document.getElementById('btn-delete');
 const btnExpandAll = document.getElementById('btn-expand-all');
@@ -273,7 +270,7 @@ function populateParentSelect() {
 function renderTree() {
     treeRoot.innerHTML = '';
     if (treeData.length === 0) {
-        treeRoot.innerHTML = '<div class="empty-state" style="padding: 20px 0;"><p>Nenhum nó cadastrado. Clique em Novo ou Re-importar Seed.</p></div>';
+        treeRoot.innerHTML = '<div class="empty-state" style="padding: 20px 0;"><p>Nenhum nó cadastrado. Clique em Novo Item.</p></div>';
         return;
     }
     
@@ -453,7 +450,7 @@ async function selectNode(nodeId) {
         badgeType.textContent = typeConfig.label;
         badgeType.className = `badge badge-type`;
         
-        badgeStatus.textContent = node.status || 'Draft';
+        badgeStatus.textContent = node.status || 'Backlog';
         
         // Format Date
         const date = new Date(node.updated_at);
@@ -512,10 +509,7 @@ function setupEventListeners() {
     
     // Delete Button
     btnDelete.addEventListener('click', handleDeleteNode);
-    
-    // Seed Re-Import Button
-    btnSeed.addEventListener('click', handleSeedImport);
-    
+
     // Global Search
     searchInput.addEventListener('input', handleSearch);
     
@@ -716,31 +710,6 @@ async function deleteNodeDirectly(nodeId) {
         fetchFlatNodes();
     } catch (err) {
         showToast(err.message, 'error');
-    }
-}
-
-// Seed Import Trigger
-async function handleSeedImport() {
-    btnSeed.disabled = true;
-    btnSeed.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Importando...';
-    
-    try {
-        const res = await fetch(`${API_BASE}/seed`, { method: 'POST' });
-        if (!res.ok) throw new Error('Falha ao rodar seed de importação');
-        const data = await res.json();
-        
-        showToast(data.message || 'Dados importados com sucesso!');
-        selectedNodeId = null;
-        detailsContent.classList.add('hidden');
-        emptyState.classList.remove('hidden');
-        
-        await fetchTree();
-        await fetchFlatNodes();
-    } catch (err) {
-        showToast(err.message, 'error');
-    } finally {
-        btnSeed.disabled = false;
-        btnSeed.innerHTML = '<i class="fa-solid fa-database"></i> Re-importar Seed';
     }
 }
 

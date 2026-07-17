@@ -23,18 +23,28 @@ DIR_TYPE_MAP = {
 CODE_REGEX = re.compile(r'([A-Z]+-\d{4})')
 
 def normalize_status(status_str):
+    """Canonical status vocabulary (English, exact values used everywhere
+    else in the app -- see static/app.js:matchStatus): Backlog, To Do,
+    Doing, Done, Canceled. This function maps whatever free-text status a
+    markdown file has (English or Portuguese, various synonyms used across
+    the repo's history) onto one of those five. "Accepted" -- the status
+    every decision record uses -- maps to "To Do": an accepted decision has
+    no more work pending on the decision record itself, but nothing has
+    been executed/shipped yet either (that's tracked by separate
+    story/task/epic records), so it belongs earlier than Done, not later.
+    """
     if not status_str:
-        return "Draft"
+        return "Backlog"
     s = status_str.lower()
-    if "draft" in s:
-        return "Draft"
-    if any(x in s for x in ["in progress", "active", "ativo", "progresso", "desenvolvimento", "development", "pilot", "piloto"]):
-        return "In Progress"
-    if any(x in s for x in ["completed", "finalizado", "concluido", "concluído", "done", "delivered", "entregue", "sucesso"]):
-        return "Completed"
-    if any(x in s for x in ["pending", "aprovação", "aprovacao", "approval"]):
-        return "Pending Approval"
-    return "Draft"
+    if any(x in s for x in ["cancel"]):  # canceled / cancelled / cancelado
+        return "Canceled"
+    if any(x in s for x in ["done", "completed", "finalizado", "concluido", "concluído", "delivered", "entregue", "sucesso", "produção", "producao", "production"]):
+        return "Done"
+    if any(x in s for x in ["doing", "in progress", "active", "ativo", "progresso", "desenvolvimento", "development", "pilot", "piloto"]):
+        return "Doing"
+    if any(x in s for x in ["to do", "todo", "accepted", "aceito", "aceita", "pending", "pendente", "aprovação", "aprovacao", "approval"]):
+        return "To Do"
+    return "Backlog"  # draft, rascunho, or anything unrecognized
 
 def map_filename_code_to_db_code(filename_code):
     if not filename_code:

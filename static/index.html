@@ -30,9 +30,6 @@
             </div>
 
             <div class="header-actions">
-                <button id="btn-seed" class="btn btn-secondary">
-                    <i class="fa-solid fa-database"></i> Re-importar Seed
-                </button>
                 <button id="btn-new-node" class="btn btn-primary">
                     <i class="fa-solid fa-plus"></i> Novo Item
                 </button>
@@ -43,10 +40,11 @@
         <div class="app-subheader">
             <div class="filters-container" id="status-filters">
                 <span class="filter-label"><i class="fa-solid fa-filter"></i> Status:</span>
-                <button class="filter-tab active" data-status="draft">Drafts</button>
-                <button class="filter-tab active" data-status="in progress">Em Progresso</button>
-                <button class="filter-tab" data-status="completed">Finalizados</button>
-                <button class="filter-tab active" data-status="pending">Pendentes</button>
+                <button class="filter-tab active" data-status="backlog">Backlog</button>
+                <button class="filter-tab active" data-status="to do">To Do</button>
+                <button class="filter-tab active" data-status="doing">Doing</button>
+                <button class="filter-tab" data-status="done">Done</button>
+                <button class="filter-tab" data-status="canceled">Canceled</button>
             </div>
             <div class="legend-container">
                 <span class="legend-item" data-tooltip="Produto: Entidade máxima. Representa um software ou sistema principal (ex: TaskMe, MinhaIncorporadora)."><i class="fa-solid fa-cubes icon-product"></i> Produto</span>
@@ -149,10 +147,11 @@
                     <div class="form-group">
                         <label for="form-status">Status</label>
                         <select id="form-status">
-                            <option value="Draft">Draft</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Pending Approval">Pending Approval</option>
-                            <option value="Completed">Completed</option>
+                            <option value="Backlog">Backlog</option>
+                            <option value="To Do">To Do</option>
+                            <option value="Doing">Doing</option>
+                            <option value="Done">Done</option>
+                            <option value="Canceled">Canceled</option>
                         </select>
                     </div>
                 </div>

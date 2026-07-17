@@ -259,14 +259,15 @@ def get_tree(db: Session = Depends(get_db)):
 
     return root_nodes
 
-@app.post("/api/seed")
-def run_seed():
-    try:
-        import seed_db
-        seed_db.main()
-        return {"message": "Seed executado com sucesso!"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+# NOTE: there used to be a POST /api/seed route here that re-ran seed_db.main()
+# on demand -- removed 2026-07-17. seed_db.main() deletes every node and
+# re-derives them from the markdown files baked into the image; once a
+# deployment has real interactively-created content (nodes that only exist
+# in the database, not as a markdown file), calling this against it destroys
+# that content with no undo. seed_db.py itself is untouched and still used
+# by entrypoint.sh for first-boot bootstrap (only runs when the table is
+# empty) -- this route was the unsafe, on-demand path, now gone on both the
+# frontend (button removed from index.html/app.js) and here.
 
 # Serve static files for Frontend
 frontend_dir = os.path.join(os.path.dirname(__file__), "static")
