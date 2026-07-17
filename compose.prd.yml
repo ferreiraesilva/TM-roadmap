@@ -1,9 +1,9 @@
 services:
-  hermes-roadmap-prd:
+  tm-roadmap-prd:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: hermes-roadmap-prd
+    container_name: tm-roadmap-prd
     restart: always
     environment:
       - DATABASE_URL=sqlite:////app/data/tm_roadmap.db
