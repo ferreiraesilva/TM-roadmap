@@ -24,7 +24,7 @@ if [ "$NODE_COUNT" = "0" ]; then
     echo "banco vazio -- rodando seed inicial..."
     python seed_db.py
 else
-    echo "banco ja tem $NODE_COUNT no(s) -- pulando seed automatico (use POST /api/seed pra ressincronizar manualmente)"
+    echo "banco ja tem $NODE_COUNT no(s) -- pulando seed automatico (nao ha mais rota HTTP pra ressincronizar; rodar 'python seed_db.py' manualmente via docker exec quando for necessario, sabendo que isso apaga nos criados so via API)"
 fi
 
 exec uvicorn main:app --host 0.0.0.0 --port 8000
