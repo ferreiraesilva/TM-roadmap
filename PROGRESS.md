@@ -1,16 +1,24 @@
 # Progress Tracker: TrueMobile Roadmap App
 
-This document tracks the phased implementation plan and progress of the **TrueMobile Roadmap Application** (the system replacing static markdown planning files with a Postgres-backed FastAPI & Front-end application).
+This document tracks the phased implementation plan and progress of the **TrueMobile Roadmap Application** (the system replacing static markdown planning files with a database-backed FastAPI & Front-end application).
 
 ---
 
-## Current Status
+## Current Status (corrected 2026-07-17 — see below)
 
-- **Status:** Planning / Designing
-- **Target Database:** PostgreSQL (`tm-postgres-hml` / `tm-postgres-prd`)
-- **Backend Stack:** FastAPI, SQLAlchemy, Alembic
-- **Frontend Stack:** HTML5 / JS / Vanilla CSS (Tailwind optional, standalone tree-view)
-- **AI Integration:** MCP Server (Model Context Protocol) for coding agents
+- **Status:** LIVE in production — https://roadmap.truemobile.com.br/, served by the shared Caddy (`tm-caddy-prd`, `tm-infra`). Also running in homologation on MAC02 (`hermes-roadmap-hml`).
+- **Database:** SQLite (`DATABASE_URL=sqlite:////app/data/tm_roadmap.db`), one file per environment inside a named Docker volume (`hermes_roadmap_data_prd` / `hermes_roadmap_data`). **Not PostgreSQL** — this doc previously said "Target Database: PostgreSQL", which was the original plan, never implemented; `database.py` has always used plain SQLAlchemy against SQLite. Correcting this here so nobody (human or agent) assumes a Postgres connection exists.
+- **Backend Stack:** FastAPI, SQLAlchemy, Alembic (single migration, `alembic/versions/30cd870d564e_*.py`).
+- **Frontend Stack:** HTML5 / JS / Vanilla CSS, served as static files by the FastAPI app itself (`static/`).
+- **AI Integration:** MCP Server — **not implemented yet** (Phase 4 below is still open). Nodes are read/written today via the plain REST API (`/api/nodes`), which has **no authentication** — anyone who can reach the container can create/edit/delete nodes. Worth revisiting before this is exposed more broadly.
+
+### How data gets in (important — read before editing markdown files)
+
+Historically, `seed_db.py` derived the entire `nodes` table from the markdown files in `initiatives/`, `epics/`, `stories/`, `bugs/`, `decisions/`, `rfcs/`, `spikes/` — it deletes all nodes and re-parses those files on every run. Until 2026-07-17, the Docker entrypoint ran this **unconditionally on every container start**, meaning any node created/edited directly via the API (not from a markdown file) was silently wiped on the next restart, crash, or redeploy. This was a real bug, not an intended behavior — nobody could recall requesting it.
+
+**Fixed 2026-07-17** (`entrypoint.sh`): the automatic seed now only runs if the `nodes` table is empty (first boot). A running environment with data is never wiped by a restart. Re-syncing new markdown content into an already-seeded environment is still possible, explicitly, via `POST /api/seed` — it is no longer automatic.
+
+**Practical consequence:** now that production is live and has real data, **new decision records, RFCs, etc. should be created directly via the API against the running instance** (`https://roadmap.truemobile.com.br/api/nodes`), not by adding a markdown file to this repo and hoping it gets seeded — it won't, automatically, anymore. The markdown files under `decisions/`, `rfcs/`, etc. remain useful as the original bootstrap content and as human-readable history in git, but they are no longer the live source of truth for what's in production. See decision records `DE-0014` and `DE-0015` for a live example of this pattern (created via `POST`/`PUT /api/nodes`, not as files in this repo).
 
 ---
 
@@ -24,6 +32,17 @@ This document tracks the phased implementation plan and progress of the **TrueMo
 ---
 
 ## Roadmap & Progress Checklist
+
+> **Note (2026-07-17):** the checklist below still reflects the original
+> plan and has not been re-audited item by item against what's actually
+> implemented. What's confirmed true today: Phase 1 (schema, Alembic,
+> seed script) and most of Phase 2 (FastAPI app, `POST/PUT/DELETE
+> /api/nodes` CRUD) exist and are live in production — but as a single
+> polymorphic `nodes` table/endpoint, not the separate per-type
+> tables/routers (`/api/initiatives`, `/api/epics`, ...) originally
+> planned. Phase 3 (dashboard) has a working static frontend. Phase 4 (MCP
+> server) is **not** implemented. Don't trust the checkboxes below without
+> checking the actual code first.
 
 ### [ ] Phase 1: Database Schema & Migration Setup
 *Goal: Model the database relations, configure migrations, and write the import script.*
