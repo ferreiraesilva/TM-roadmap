@@ -12,9 +12,11 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
+RUN chmod +x entrypoint.sh
 
 # Expose port
 EXPOSE 8000
 
-# Start script to run migrations, seed if db is empty, and start uvicorn
-CMD ["sh", "-c", "alembic upgrade head && python seed_db.py && uvicorn main:app --host 0.0.0.0 --port 8000"]
+# entrypoint.sh: migra sempre, semeia SÓ se o banco estiver vazio (nunca
+# apaga dado existente por causa de um restart -- ver comentário no script).
+CMD ["./entrypoint.sh"]
