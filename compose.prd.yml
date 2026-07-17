@@ -10,10 +10,10 @@ services:
     volumes:
       - hermes_roadmap_data:/app/data
     networks:
-      - caiaweb_default
+      - tm-network
 
 networks:
-  caiaweb_default:
+  tm-network:
     external: true
 
 volumes:
