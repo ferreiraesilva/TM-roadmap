@@ -1,0 +1,75 @@
+version: 1
+
+baseline:
+  name: Hermes Baseline
+  applies_to: all_hermes_installations
+  description: >
+    Global operating model inherited by every Hermes Agent installation.
+
+human_approval:
+  required_for:
+    - sprint_commitment
+    - product_catalog_changes
+    - installation_creation
+    - baseline_exceptions
+    - product_deployment_changes
+    - pull_request_merge
+    - issue_closure
+  rules:
+    - Agents may draft, refine and recommend work.
+    - Agents must not approve their own work for sprint execution.
+    - Agents must not merge pull requests without human acceptance.
+    - Agents must not close work items without human acceptance.
+
+work_classification:
+  allowed_types:
+    - Idea
+    - Initiative
+    - Epic
+    - User Story
+    - Technical Task
+    - Spike
+    - Bug
+    - RFC
+    - Decision Record
+
+workflow_statuses:
+  non_executable:
+    - Inbox
+    - Draft
+    - Discovery
+    - Spec
+    - Ready for Approval
+    - Parked
+    - Blocked
+  executable:
+    - Approved for Sprint
+    - In Development
+    - PR Review
+    - Human Acceptance
+  terminal:
+    - Done
+    - Closed
+    - Not Planned
+
+agent_rules:
+  - Agents must use templates from /templates when creating structured records.
+  - Agents must use /config/product-catalog.md as the product name source of truth.
+  - Agents must check installation and deployment configuration before determining product availability.
+  - Agents must add open questions instead of inventing critical decisions.
+  - Agents must escalate missing scope, acceptance criteria, target installation or approval to the human user.
+
+github_project:
+  required_fields:
+    - Type
+    - Product
+    - Status
+    - Priority
+    - Installation Scope
+    - Target Installations
+    - Deployment Scope
+    - Start Date
+    - Target Date
+    - Sprint
+    - Approved for Sprint
+    - Repository

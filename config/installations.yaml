@@ -1,0 +1,15 @@
+version: 1
+
+installations:
+  - id: default
+    name: Default Hermes Installation
+    status: draft
+    description: >
+      Default placeholder Hermes installation used until official installations are defined.
+    inherits_baseline: true
+    owner: human-user
+    environment: personal
+    enabled_products:
+      - Hermes Core
+    notes:
+      - This installation is a placeholder and must be refined when real Hermes Agent instances are created.

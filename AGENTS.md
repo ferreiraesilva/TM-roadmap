@@ -72,6 +72,35 @@ Templates must not hardcode the full product list.
 
 Templates must reference `/config/product-catalog.md` instead.
 
+## Hermes Installation and Deployment Rules
+
+Every Hermes Agent installation must inherit the Hermes Baseline defined in `/config/hermes-baseline.yaml`, unless the human explicitly approves an exception.
+
+AI agents must distinguish between:
+
+* Hermes Baseline
+* Hermes Installation
+* Product / Module Deployment
+
+The file `/config/installations.yaml` is the source of truth for known Hermes installations.
+
+The file `/config/product-deployments.yaml` is the source of truth for where each product or module is deployed.
+
+The file `/config/product-catalog.md` defines official product names, but it does not define where products are deployed.
+
+Agents must not assume that a product is available in a Hermes installation only because it exists in the product catalog.
+
+When creating or updating initiatives, epics, user stories, technical tasks, spikes or bugs, agents must identify whether the work is:
+
+* Global baseline work
+* Installation-specific work
+* Product/module deployment work
+* Product-specific implementation work
+
+If the target installation is unclear, agents must add an open question instead of guessing.
+
+If a product should be enabled in a new installation, agents must propose an update to `/config/product-deployments.yaml` and wait for human approval.
+
 ## How to Choose the Correct Record Type
 
 Use the following rules.
@@ -329,6 +358,16 @@ Must include:
 * Technical Tasks
 * Acceptance Criteria
 
+## Installation and Deployment Fields
+
+All structured work records must include or explicitly mark as not applicable:
+
+* Installation Scope
+* Target Installations
+* Deployment Scope
+
+Installation IDs must match `/config/installations.yaml`. Deployment scope must match `/config/product-deployments.yaml`.
+
 ### User Story
 
 Must include:
@@ -521,11 +560,12 @@ When generating GitHub issues, always:
 2. Use the correct template.
 3. Fill every relevant section.
 4. Select the product from `/config/product-catalog.md`.
-5. Mark missing details as `To be defined` or `Open question`.
-6. Add clear acceptance criteria.
-7. Link to related initiative, epic, RFC or repository when available.
-8. Avoid creating duplicate issues.
-9. Keep the issue focused on one objective.
+5. Identify Installation Scope, Target Installations and Deployment Scope.
+6. Mark missing details as `To be defined` or `Open question`.
+7. Add clear acceptance criteria.
+8. Link to related initiative, epic, RFC or repository when available.
+9. Avoid creating duplicate issues.
+10. Keep the issue focused on one objective.
 
 ## When Updating Existing Records
 
@@ -574,6 +614,8 @@ A generated record is acceptable only if another person can read it and understa
 * What is being proposed
 * Why it matters
 * What product it belongs to
+* Whether it is global, installation-specific, deployment-related or product implementation work
+* Which installations and deployment scope apply
 * What is included
 * What is excluded
 * What depends on Hermes

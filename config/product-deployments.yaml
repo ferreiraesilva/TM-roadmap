@@ -1,0 +1,38 @@
+version: 1
+
+deployment_scopes:
+  - Global
+  - Selected Installations
+  - Not Deployed
+  - Draft
+
+deployments:
+  - product: Hermes Core
+    scope: Global
+    installations:
+      - all
+    status: active
+    notes:
+      - Hermes Core applies to every Hermes installation.
+
+  - product: TaskMe
+    scope: Draft
+    installations: []
+    status: draft
+    notes:
+      - Product deployment scope must be approved before activation.
+
+  - product: WhatsApp Group Personality
+    scope: Draft
+    installations: []
+    status: draft
+    notes:
+      - Product deployment scope must be approved before activation.
+
+  - product: Hermes Experiments
+    scope: Selected Installations
+    installations:
+      - default
+    status: draft
+    notes:
+      - Experiments may run only in selected installations after human approval.

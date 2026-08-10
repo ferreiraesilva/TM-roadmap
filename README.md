@@ -126,6 +126,32 @@ Avoid storing:
     └── additional-documentation.md
 ```
 
+The installation and deployment model adds these files to the project structure:
+
+```text
+config/
+  product-catalog.md
+  hermes-baseline.yaml
+  installations.yaml
+  product-deployments.yaml
+
+docs/
+  hermes-installation-blueprint.md
+  product-deployment-model.md
+
+templates/
+  hermes-installation-template.md
+  product-deployment-template.md
+```
+
+## Hermes Installation Model
+
+The **Hermes Baseline** defines the global governance and human-approval rules inherited by every Hermes installation. A **Hermes Installation** is a concrete agent instance with its own identity, environment, permissions and enabled products. The **Product Deployment Model** defines whether each cataloged product is global, limited to selected installations, not deployed or still in draft.
+
+The product catalog defines official names; it does not enable products. Agents should operate and propose changes to the configuration files, while the human reviews and approves installation and deployment decisions instead of configuring every installation manually.
+
+Detailed guidance is available in `/docs/hermes-installation-blueprint.md` and `/docs/product-deployment-model.md`.
+
 ## Main Directories
 
 ### `/product-vision`
@@ -188,6 +214,10 @@ Templates should be used when creating:
 ### `/docs`
 
 Stores additional documentation that does not fit into product vision, RFCs, decisions or templates.
+
+### `/config`
+
+Stores the official product catalog, global Hermes baseline, installation catalog and product deployment matrix used by agents and future automation.
 
 ## AI Agent Instructions
 
